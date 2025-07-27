@@ -16,7 +16,6 @@ def index():
 @app.route('/query', methods=['POST'])
 def query():
     data = request.json
-    print("received data", data)
     bbox = data['bbox']  # [south, west, north, east]
     amenity = data['amenity']  # e.g., 'drinking_water' or 'toilets'
     query = f"""
@@ -25,6 +24,7 @@ def query():
     out geom;
     """
     overpass_data = fetch_api_data(url, query)
+    print("overpass_data", overpass_data)
     # Extract lat/lon for each node
     features = [
         {
