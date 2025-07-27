@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Map with Overpass</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
+    <style>#map { height: 90vh; }</style>
+</head>
+<body>
+    <h2>Draw a bounding box and select amenity</h2>
+    <select id="amenity">
+        <option value="drinking_water">Water Fountains</option>
+        <option value="toilets">Toilets</option>
+    </select>
+    <button id="search-visible">Search in visible area</button>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

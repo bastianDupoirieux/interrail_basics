@@ -1,0 +1,13 @@
+overpass_url: "https://overpass-api.de/api/interpreter"
+
+queries:
+  drinking_water:
+    query: |
+      [out:json][timeout:900];
+      node[amenity=drinking_water]({{bbox}});
+      out geom;
+  toilets:
+    query: |
+      [out:json][timeout:900];
+      node[amenity=toilets]({{bbox}});
+      out geom;
