@@ -16,7 +16,7 @@ def index():
 @app.route('/query', methods=['POST'])
 def query():
     data = request.json
-    print(data)
+    print("received data", data)
     bbox = data['bbox']  # [south, west, north, east]
     amenity = data['amenity']  # e.g., 'drinking_water' or 'toilets'
     query = f"""

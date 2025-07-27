@@ -7,12 +7,13 @@
     <style>#map { height: 90vh; }</style>
 </head>
 <body>
-    <h2>Draw a bounding box and select amenity</h2>
     <select id="amenity">
         <option value="drinking_water">Water Fountains</option>
         <option value="toilets">Toilets</option>
     </select>
     <button id="search-visible">Search in visible area</button>
+    <button id="locate-me">Center on My Location</button>
+    <button id="clear-map">Clear Map</button>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>

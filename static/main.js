@@ -40,8 +40,30 @@ searchButton.onclick = function() {
     });
 };
 
+document.getElementById('locate-me').onclick = function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                console.log(lat, lon);
+                map.setView([lat, lon], 15); // 15 is a good zoom for city-level
+                // Optionally, add a marker for the user's location:
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup('You are here!')
+                    .openPopup();
+            },
+            function(error) {
+                alert('Unable to retrieve your location.');
+            }
+        );
+    } else {
+        alert('Geolocation is not supported by your browser.');
+    }
+};
+
 // Optional: Clear markers button
-const clearButton = document.getElementById('clear');
+const clearButton = document.getElementById('clear-map');
 clearButton.onclick = function() {
     markersLayer.clearLayers();
 };
