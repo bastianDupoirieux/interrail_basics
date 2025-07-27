@@ -24,7 +24,6 @@ def query():
     out geom;
     """
     overpass_data = fetch_api_data(url, query)
-    print("overpass_data", overpass_data)
     # Extract lat/lon for each node
     features = [
         {
