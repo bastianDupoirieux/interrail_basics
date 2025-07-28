@@ -7,6 +7,25 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Layer for markers
 const markersLayer = new L.LayerGroup().addTo(map);
 
+// Define custom icons for different amenities
+const fountainIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const toiletIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 // Status message function
 function showStatus(message, type = 'success') {
     const statusEl = document.getElementById('status-message');
@@ -70,19 +89,24 @@ searchButton.onclick = function() {
         data.forEach(item => {
             // Set popup text based on amenity type and name
             let popupText = "";
+            let markerIcon = fountainIcon; // default icon
+            
             if (item.tags && item.tags.amenity === 'drinking_water') {
                 popupText = "💧 Water Fountain";
+                markerIcon = fountainIcon; // light blue
             } else if (item.tags && item.tags.amenity === "toilets") {
                 popupText = "🚻 Toilet";
+                markerIcon = toiletIcon; // green
             } else {
                 popupText = "📍 Amenity";
+                markerIcon = fountainIcon; // default
             }
             
             if (item.tags && item.tags.name) {
                 popupText += `<br><i>${item.tags.name}</i>`;
             }
 
-            L.marker([item.lat, item.lon])
+            L.marker([item.lat, item.lon], {icon: markerIcon})
                 .bindPopup(popupText)
                 .addTo(markersLayer);
         });
