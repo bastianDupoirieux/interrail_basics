@@ -1,7 +1,8 @@
 // Initialize the map
 const map = L.map('map').setView([48.8566, 2.3522], 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
+L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18
 }).addTo(map);
 
 // Layer for markers
@@ -154,6 +155,11 @@ document.getElementById('locate-me').onclick = function() {
                     .openPopup();
                 
                 showStatus('Location found!');
+                
+                // Reset button state
+                const locateButton = document.getElementById('locate-me');
+                locateButton.textContent = '📍 Center on My Location';
+                locateButton.disabled = false;
             },
             function(error) {
                 console.error('Geolocation error:', error);
@@ -166,12 +172,22 @@ document.getElementById('locate-me').onclick = function() {
                     errorMessage = 'Location request timed out. Please try again.';
                 }
                 showStatus(errorMessage, 'error');
+                
+                // Reset button state on error
+                const locateButton = document.getElementById('locate-me');
+                locateButton.textContent = '📍 Center on My Location';
+                locateButton.disabled = false;
             }
-        ).finally(() => {
+        );
+        
+        // Reset button state after a timeout (in case geolocation hangs)
+        setTimeout(() => {
             const locateButton = document.getElementById('locate-me');
-            locateButton.textContent = '📍 Center on My Location';
-            locateButton.disabled = false;
-        });
+            if (locateButton.textContent === '📍 Locating...') {
+                locateButton.textContent = '📍 Center on My Location';
+                locateButton.disabled = false;
+            }
+        }, 10000); // 10 second timeout
     } else {
         showStatus('Geolocation is not supported by your browser.', 'error');
     }
