@@ -9,23 +9,38 @@ L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
 const markersLayer = new L.LayerGroup().addTo(map);
 
 // Define custom icons for different amenities
-const fountainIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+const fountainIcon = L.divIcon({
+    html: '<div style="background-color: #4A90E2; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><span style="color: white; font-size: 16px;">💧</span></div>',
+    className: 'custom-div-icon',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15]
 });
 
-const toiletIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+const toiletIcon = L.divIcon({
+    html: '<div style="background-color: #4A90E2; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><span style="color: white; font-size: 16px;">🚻</span></div>',
+    className: 'custom-div-icon',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15]
 });
+
+// Alternative: Use Font Awesome icons (requires Font Awesome CSS)
+// const fountainIcon = L.divIcon({
+//     html: '<div style="background-color: #4A90E2; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><i class="fas fa-tint" style="color: white; font-size: 14px;"></i></div>',
+//     className: 'custom-div-icon',
+//     iconSize: [30, 30],
+//     iconAnchor: [15, 15],
+//     popupAnchor: [0, -15]
+// });
+
+// const toiletIcon = L.divIcon({
+//     html: '<div style="background-color: #50C878; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><i class="fas fa-restroom" style="color: white; font-size: 14px;"></i></div>',
+//     className: 'custom-div-icon',
+//     iconSize: [30, 30],
+//     iconAnchor: [15, 15],
+//     popupAnchor: [0, -15]
+// });
 
 // Status message function
 function showStatus(message, type = 'success') {
