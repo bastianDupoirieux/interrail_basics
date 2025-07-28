@@ -1,20 +1,223 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dynamic Map with Overpass</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrail Map - Find Amenities</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
-    <style>#map { height: 90vh; }</style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+        }
+        
+        /* Desktop layout */
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+            }
+            
+            .sidebar {
+                width: 250px;
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-right: 1px solid #dee2e6;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                overflow-y: auto;
+            }
+            
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            #map {
+                height: 100vh;
+                flex: 1;
+            }
+        }
+        
+        /* Mobile layout */
+        @media (max-width: 767px) {
+            .sidebar {
+                width: 100%;
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-bottom: 1px solid #dee2e6;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                max-height: 40vh;
+                overflow-y: auto;
+            }
+            
+            #map {
+                height: 60vh;
+            }
+        }
+        
+        .sidebar h2 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        
+        .amenity-section {
+            margin-bottom: 20px;
+        }
+        
+        .amenity-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        .amenity-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .amenity-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .amenity-options input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            min-height: 44px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .search-button {
+            background-color: #28a745;
+        }
+        
+        .search-button:hover {
+            background-color: #1e7e34;
+        }
+        
+        .locate-button {
+            background-color: #17a2b8;
+        }
+        
+        .locate-button:hover {
+            background-color: #117a8b;
+        }
+        
+        .clear-button {
+            background-color: #dc3545;
+        }
+        
+        .clear-button:hover {
+            background-color: #c82333;
+        }
+        
+        .status-message {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-    <select id="amenity">
-        <option value="drinking_water">Water Fountains</option>
-        <option value="toilets">Toilets</option>
-    </select>
-    <button id="search-visible">Search in visible area</button>
-    <button id="locate-me">Center on My Location</button>
-    <button id="clear-map">Clear Map</button>
-    <div id="map"></div>
+    <div class="sidebar">
+        <h2>🚂 Interrail Map</h2>
+        
+        <div class="amenity-section">
+            <h3>Select Amenities:</h3>
+            <div class="amenity-options">
+                <label>
+                    <input type="checkbox" value="drinking_water" checked>
+                    💧 Water Fountains
+                </label>
+                <label>
+                    <input type="checkbox" value="toilets" checked>
+                    🚻 Toilets
+                </label>
+            </div>
+        </div>
+        
+        <div class="status-message" id="status-message"></div>
+        
+        <div class="button-group">
+            <button id="search-visible" class="search-button">
+                🔍 Search in visible area
+            </button>
+            <button id="locate-me" class="locate-button">
+                📍 Center on My Location
+            </button>
+            <button id="clear-map" class="clear-button">
+                🗑️ Clear Map
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div id="map"></div>
+    </div>
+    
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
     <script src="{{ url_for('static', filename='main.js') }}"></script>
